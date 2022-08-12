@@ -47,11 +47,12 @@ export default {
       this.todos = this.todos.filter((todo) => !todo.done);
     },
     editTodo(todo) {
-      todo.isEdit = true; 
+      todo.isEdit = true;
     },
-    updataTodo() {
-      
-    }
+    updateTodo(todo, title) {
+      todo.isEdit = false;
+      if (title.trim()) todo.title = title;
+    },
   },
   watch: {
     todos: {
@@ -65,11 +66,13 @@ export default {
     this.$bus.$on("checkTodo", this.checkTodo);
     this.$bus.$on("deleteTodo", this.deleteTodo);
     this.$bus.$on("editTodo", this.editTodo);
+    this.$bus.$on("updateTodo", this.updateTodo);
   },
   beforeDestroy() {
     this.$bus.$off("checkTodo");
     this.$bus.$off("deleteTodo");
     this.$bus.$off("editTodo");
+    this.$bus.$off("updateTodo");
   },
 };
 </script> 

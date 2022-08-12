@@ -7,10 +7,10 @@
         @click="handleCheck(todo.id)"
       />
       <span v-show="!todo.isEdit">{{ todo.title }}</span>
-      <input v-show="todo.isEdit" type="text" :value="todo.title">
+      <input v-show="todo.isEdit" type="text" :value="todo.title" @blur="handleUpdate(todo,$event)" ref="inputTitle">
     </label>
     <button class="btn btn-danger" @click="handleDelete(todo.id)">删除</button>
-    <button class="btn btn-edit" @click="handleEdit(todo,$event)">编辑</button>
+    <button class="btn btn-edit" @click="handleEdit(todo)">编辑</button>
   </li>
 </template>
 
@@ -26,9 +26,15 @@ export default {
     handleDelete(id) {
       if (confirm("确认删除吗？")) this.$bus.$emit("deleteTodo", id);
     },
-    handleEdit(todo,e) {
-      this.$bus.$emit("editTodo", todo,e.target.value);
+    handleEdit(todo) {
+      this.$bus.$emit("editTodo", todo);
+      this.$nextTick(function(){
+        this.$refs.inputTitle.focus();
+      })
     },
+    handleUpdate(todo,e){
+      this.$bus.$emit('updateTodo',todo,e.target.value)
+    }
   },
 };
 </script>
