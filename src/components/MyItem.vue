@@ -6,23 +6,28 @@
         type="checkbox"
         @click="handleCheck(todo.id)"
       />
-      <span>{{ todo.title }}</span>
+      <span v-show="!todo.isEdit">{{ todo.title }}</span>
+      <input v-show="todo.isEdit" type="text" :value="todo.title">
     </label>
     <button class="btn btn-danger" @click="handleDelete(todo.id)">删除</button>
+    <button class="btn btn-edit" @click="handleEdit(todo,$event)">编辑</button>
   </li>
 </template>
 
 <script>
 export default {
   name: "MyItem",
-  props: ["todo", "checkTodo", "deleteTodo"],
+  props: ["todo"],
   methods: {
     handleCheck(id) {
-      this.checkTodo(id);
+      this.$bus.$emit("checkTodo", id);
     },
 
     handleDelete(id) {
-      if (confirm ("确认删除吗？")) this.deleteTodo(id);
+      if (confirm("确认删除吗？")) this.$bus.$emit("deleteTodo", id);
+    },
+    handleEdit(todo,e) {
+      this.$bus.$emit("editTodo", todo,e.target.value);
     },
   },
 };
@@ -54,6 +59,8 @@ li button {
   float: right;
   display: none;
   margin-top: 3px;
+  margin-right: 5px;
+  margin-left: 5px;
 }
 
 li:before {

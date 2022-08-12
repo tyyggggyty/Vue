@@ -11,12 +11,12 @@
 <script>
 export default {
   name: "MyHeader",
-  props: ["addTodo"],
+//   props: ["addTodo"],
   methods: {
     add(e) {
       if (e.target.value.trim() != "") {
-        const todo = { id: Date.now(), title: e.target.value, done: false };
-        this.addTodo(todo);
+        const todo = { id: Date.now(), title: e.target.value, done: false, isEdit:false };
+        this.$emit('addTodo',todo);
         e.target.value = "";
       }
     },

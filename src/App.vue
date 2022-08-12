@@ -1,8 +1,12 @@
 <template>
   <div>
-    <MyHeader :addTodo="addTodo" />
-    <MyList :todos="todos" :checkTodo="checkTodo" :deleteTodo="deleteTodo" />
-    <MyFooter :todos="todos" :checkAllTodo="checkAllTodo" :deleteDoneTodo="deleteDoneTodo" />
+    <MyHeader @addTodo="addTodo" />
+    <MyList :todos="todos" />
+    <MyFooter
+      :todos="todos"
+      @checkAllTodo="checkAllTodo"
+      :deleteDoneTodo="deleteDoneTodo"
+    />
   </div>
 </template>
 
@@ -11,15 +15,11 @@ import MyHeader from "./components/MyHeader";
 import MyList from "./components/MyList";
 import MyFooter from "./components/MyFooter";
 export default {
-  name: "app",
+  name: "App",
   components: { MyHeader, MyList, MyFooter },
   data() {
     return {
-      todos: [
-        { id: "001", title: "打游戏", done: true },
-        { id: "002", title: "学习", done: false },
-        { id: "003", title: "睡觉", done: true },
-      ],
+      todos: JSON.parse(localStorage.getItem("todos")) || [],
     };
   },
   methods: {
@@ -39,13 +39,37 @@ export default {
 
     checkAllTodo(done) {
       this.todos.forEach((todo) => {
-        todo.done = done
+        todo.done = done;
       });
     },
 
     deleteDoneTodo() {
-      this.todos = this.todos.filter((todo) => !todo.done );
+      this.todos = this.todos.filter((todo) => !todo.done);
+    },
+    editTodo(todo) {
+      todo.isEdit = true; 
+    },
+    updataTodo() {
+      
     }
+  },
+  watch: {
+    todos: {
+      deep: true,
+      handler(value) {
+        localStorage.setItem("todos", JSON.stringify(value));
+      },
+    },
+  },
+  mounted() {
+    this.$bus.$on("checkTodo", this.checkTodo);
+    this.$bus.$on("deleteTodo", this.deleteTodo);
+    this.$bus.$on("editTodo", this.editTodo);
+  },
+  beforeDestroy() {
+    this.$bus.$off("checkTodo");
+    this.$bus.$off("deleteTodo");
+    this.$bus.$off("editTodo");
   },
 };
 </script> 
@@ -78,9 +102,18 @@ body {
   background-color: #da4f49;
   border: 1px solid #bd362f;
 }
+.btn-edit {
+  color: #fff;
+  background-color: #3157eb;
+  border: 1px solid #2344c6;
+}
 .btn-danger:hover {
   color: #fff;
   background-color: #bd362f;
+}
+.btn-edit:hover {
+  color: #fff;
+  background-color: #2344c6;
 }
 .btn:focus {
   outline: none;
