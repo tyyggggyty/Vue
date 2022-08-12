@@ -1,19 +1,31 @@
 <template>
   <li>
     <label>
-      <input :checked="todo.done" type="checkbox" />
-      <span>{{todo.title}}</span>
+      <input
+        :checked="todo.done"
+        type="checkbox"
+        @click="handleCheck(todo.id)"
+      />
+      <span>{{ todo.title }}</span>
     </label>
-    <button class="btn btn-danger">删除</button>
+    <button class="btn btn-danger" @click="handleDelete(todo.id)">删除</button>
   </li>
 </template>
 
 <script>
-    export default {
-    name: "MyItem",
-    props: ['todo'], 
+export default {
+  name: "MyItem",
+  props: ["todo", "checkTodo", "deleteTodo"],
+  methods: {
+    handleCheck(id) {
+      this.checkTodo(id);
+    },
+
+    handleDelete(id) {
+      if (confirm ("确认删除吗？")) this.deleteTodo(id);
+    },
+  },
 };
-    
 </script>
 
 <style scoped>
